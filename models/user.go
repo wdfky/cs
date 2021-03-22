@@ -7,20 +7,23 @@ type UserInfo struct {
 	Password string `gorm:"password"`
 }
 type Student struct {
-	Sno       string `gorm:"sno"`
-	Spassword string `gorm:"spassword"`
-	Sname     string `gorm:"sname"`
-	Ssex      string `gorm:"ssex"`
-	Sage      int    `gorm:"sage"`
-	Sdapt     string `gorm:"sdapt"`
-	Sid       string `gorm:"sid"`
-	Spower    string `gorm:"spower"`
+	ID       int    `gorm:"id"`
+	ClazzId  int    `gorm:"spassword"`
+	Gender   int    `gorm:"sname"`
+	Name     string `gorm:"ssex"`
+	Notes    string `gorm:"sage"`
+	Password string `gorm:"password"`
+	Sno      string `gorm:"sno"`
+}
+type Teacher struct {
+	ID   int    `gorm:"id"`
+	Name string `gorm:"name"`
 }
 
 func CheckUser(u *Student) bool {
 	var stu Student
 	dao.DB.Where("sno=?", u.Sno).Find(&stu)
-	if u.Spassword == stu.Spassword {
+	if u.Password == stu.Password {
 		return true
 	}
 	return false

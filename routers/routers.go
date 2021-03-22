@@ -14,5 +14,7 @@ func SetupRouter() *gin.Engine {
 	r.POST("/login", controller.PostLogin)
 	r.GET("/login", controller.GetLogin)
 	r.GET("/1", controller.HandleLogin)
+	r.GET("/choose", controller.GetCourse)
+	r.POST("/choose", controller.ChooseCourse)
 	return r
 }

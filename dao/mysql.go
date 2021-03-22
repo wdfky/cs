@@ -16,6 +16,7 @@ func InitMySQL() (err error) {
 		logrus.Error("init mysql failed")
 		panic(err)
 	}
+	DB.SingularTable(true)
 	return
 }
 func Close() {
