@@ -14,6 +14,7 @@ type CourseTeacher struct {
 	Tid     int `gorm:"tid"`
 	Cid     int `gorm:"cid"`
 	Surplus int `gorm:"surplus"`
+	Version int `gorm:"version"`
 }
 type Course struct {
 	Id   int    `gorm:"id"`
@@ -38,14 +39,16 @@ func ReduceCourse(course, teacher string, student int) (err error) {
 	dao.DB.Where("name=?", teacher).Find(&t)
 	dao.DB.Where("cid=? AND tid=?", c.Cno, t.ID).Find(&ct)
 	//fmt.Println(teacher, course)
-	if ct.Surplus <= 0 {
-		return errors.New("没有课余量了╮(╯-╰)╭")
-	} else {
-		cs.Cid = c.Cno
-		cs.Sid = student
-		dao.DB.Model(&ct).Where("cid=? AND tid=?", c.Cno, t.ID).Update("surplus", ct.Surplus-1)
-		dao.DB.Save(&cs)
+	cs.Cid = c.Cno
+	cs.Sid = student
+	err = dao.DB.Model(&ct).Where("cid=? AND tid=? AND vison=? AND surplus > 0", c.Cno, t.ID, ct.Version, ct.Surplus).Update("surplus", ct.Surplus-1, "version", ct.Version+1).Error
+	if err != nil {
+		err = ReduceCourse(course, teacher, student)
+		if err != nil {
+			panic(err)
+		}
 	}
+	dao.DB.Save(&cs)
 	return
 }
 func GetallCourse() (courstList []*CourseTeacher, err error) {
